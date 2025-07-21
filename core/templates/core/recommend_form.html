@@ -1,0 +1,82 @@
+<!-- core/templates/core/recommend_form.html -->
+
+{% extends 'core/base.html' %}
+
+{% block title %}Select Your Favorite Books{% endblock title %}
+
+{% block content %}
+  <h1 class="mb-4">Select Your Top 3 Favorite Books</h1>
+  <form method="post" novalidate autocomplete="off">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div class="mb-3 position-relative">
+      <label for="id_book1" class="form-label">First Book</label>
+      <input type="text" name="book1" id="id_book1"
+             class="form-control" placeholder="Type book name..." />
+      <div id="suggestions-book1" class="list-group suggestions"></div>
+      {{ form.book1.errors }}
+    </div>
+
+    <div class="mb-3 position-relative">
+      <label for="id_book2" class="form-label">Second Book</label>
+      <input type="text" name="book2" id="id_book2"
+             class="form-control" placeholder="Type book name..." />
+      <div id="suggestions-book2" class="list-group suggestions"></div>
+      {{ form.book2.errors }}
+    </div>
+
+    <div class="mb-3 position-relative">
+      <label for="id_book3" class="form-label">Third Book</label>
+      <input type="text" name="book3" id="id_book3"
+             class="form-control" placeholder="Type book name..." />
+      <div id="suggestions-book3" class="list-group suggestions"></div>
+      {{ form.book3.errors }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Get Recommendations</button>
+  </form>
+
+  <script>
+    function setupSuggest(inputId, suggestionsId) {
+      const inp = document.getElementById(inputId);
+      const box = document.getElementById(suggestionsId);
+
+      inp.addEventListener('input', () => {
+        const q = inp.value.trim();
+        if (q.length < 2) {
+          box.innerHTML = '';
+          return;
+        }
+        fetch("{% url 'book-suggest' %}?q=" + encodeURIComponent(q))
+          .then(res => res.json())
+          .then(json => {
+            box.innerHTML = '';
+            json.results.forEach(item => {
+              const a = document.createElement('a');
+              a.className = 'list-group-item list-group-item-action suggestion-item';
+              a.innerHTML = `<div>${item.title}</div>
+                             <div>Author: ${item.first_author}</div>`;
+              a.addEventListener('click', () => {
+                inp.value = item.title;
+                box.innerHTML = '';
+              });
+              box.appendChild(a);
+            });
+          });
+      });
+
+      document.addEventListener('click', e => {
+        if (!inp.contains(e.target) && !box.contains(e.target)) {
+          box.innerHTML = '';
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setupSuggest('id_book1','suggestions-book1');
+      setupSuggest('id_book2','suggestions-book2');
+      setupSuggest('id_book3','suggestions-book3');
+    });
+  </script>
+{% endblock content %}

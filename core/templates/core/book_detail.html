@@ -1,0 +1,38 @@
+<!-- core/templates/core/book_detail.html -->
+
+{% extends 'core/base.html' %}
+
+{% block title %}{{ book.title }} — Details{% endblock title %}
+
+{% block content %}
+  <a href="javascript:history.back()" class="btn btn-outline-secondary mb-4">
+    ← Back
+  </a>
+
+  <div class="row">
+    {% if book.image_url %}
+      <div class="col-md-4 mb-3">
+        <img src="{{ book.image_url }}" alt="{{ book.title }}" class="img-fluid shadow-sm">
+      </div>
+    {% endif %}
+    <div class="col">
+      <h1 class="display-5">{{ book.title }}</h1>
+      <p class="lead">Author(s): {{ book.authors_list|join:", " }}</p>
+      <ul class="list-group mb-3">
+        <li class="list-group-item"><strong>Rating:</strong> {{ book.average_rating }}</li>
+        <li class="list-group-item"><strong>Number of Ratings:</strong> {{ book.ratings_count }}</li>
+        {% if book.publication_year %}
+          <li class="list-group-item"><strong>Publication Year:</strong> {{ book.publication_year }}</li>
+        {% endif %}
+        {% if book.num_pages %}
+          <li class="list-group-item"><strong>Number of Pages:</strong> {{ book.num_pages }}</li>
+        {% endif %}
+        {% if genres %}
+          <li class="list-group-item">
+            <strong>Genres:</strong> {{ genres|join:", " }}
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+{% endblock content %}

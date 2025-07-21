@@ -1,0 +1,47 @@
+<!-- core/templates/core/random_book.html -->
+
+{% extends 'core/base.html' %}
+
+{% block title %}Random Book Recommendation{% endblock title %}
+
+{% block content %}
+  <h1 class="h3 mb-4" style="text-align: center;">Random Book Recommendation</h1>
+
+  {% if book %}
+    <div class="d-flex justify-content-center mb-4">
+      <div class="card fixed-card shadow-sm">
+        {% if book.image_url %}
+          <img
+            src="{{ book.image_url }}"
+            class="card-img-top"
+            alt="{{ book.title }}"
+            style="width:100%; height:400px; object-fit:cover;"
+          >
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{ book.title }}</h5>
+          <p class="card-text">
+            <strong>Author:</strong> {{ book.first_author }}
+          </p>
+          <p class="card-text">
+            <strong>Rating:</strong> {{ book.average_rating }}
+          </p>
+          <a
+            href="{% url 'book_detail' book.pk %}"
+            class="btn btn-outline-secondary"
+          >
+            View Details
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center">
+      <a href="{% url 'random_book' %}" class="btn btn-primary">
+        Get Another
+      </a>
+    </div>
+  {% else %}
+    <p class="text-muted">Sorry, no books found with rating above 3.7.</p>
+  {% endif %}
+
+{% endblock content %}

@@ -1,0 +1,198 @@
+<!-- core/templates/core/search.html -->
+
+{% extends 'core/base.html' %}
+
+{% block title %}Book Search{% endblock title %}
+
+{% block content %}
+  <div class="mb-4">
+    <h1 class="h3">Book Search</h1>
+    <p class="text-muted">You can search by the criteria below.</p>
+  </div>
+
+  <form method="get" class="row g-4 mb-5">
+    {{ form.non_field_errors }}
+
+    <div class="col-md-4">
+      {{ form.title.label_tag }} {{ form.title }}
+    </div>
+    <div class="col-md-4">
+      {{ form.author.label_tag }} {{ form.author }}
+    </div>
+    <div class="col-md-4">
+      {{ form.sort_by.label_tag }} {{ form.sort_by }}
+    </div>
+
+    <div class="col-md-6">
+      {{ form.genre1.label_tag }} {{ form.genre1 }}
+    </div>
+    <div class="col-md-6">
+      {{ form.genre2.label_tag }} {{ form.genre2 }}
+    </div>
+
+    <div class="col-md-6">
+      <label for="id_rating_min" class="form-label">
+        Min. Rating: <span id="rating_min_value">{{ form.rating_min.value|default_if_none:'0' }}</span>
+      </label>
+      <input
+        type="range"
+        name="rating_min"
+        id="id_rating_min"
+        class="form-range"
+        min="0"
+        max="5"
+        step="0.1"
+        value="{{ form.rating_min.value|default_if_none:'0' }}"
+      />
+      {{ form.rating_min.errors }}
+    </div>
+    <div class="col-md-6">
+      <label for="id_rating_max" class="form-label">
+        Max. Rating: <span id="rating_max_value">{{ form.rating_max.value|default_if_none:'5' }}</span>
+      </label>
+      <input
+        type="range"
+        name="rating_max"
+        id="id_rating_max"
+        class="form-range"
+        min="0"
+        max="5"
+        step="0.1"
+        value="{{ form.rating_max.value|default_if_none:'5' }}"
+      />
+      {{ form.rating_max.errors }}
+    </div>
+
+    <div class="col-md-6">
+      <label for="id_year_min" class="form-label">
+        Min. Year: <span id="year_min_value">{{ form.year_min.value|default_if_none:'1800' }}</span>
+      </label>
+      <input
+        type="range"
+        name="year_min"
+        id="id_year_min"
+        class="form-range"
+        min="1800"
+        max="2021"
+        step="1"
+        value="{{ form.year_min.value|default_if_none:'1800' }}"
+      />
+      {{ form.year_min.errors }}
+    </div>
+    <div class="col-md-6">
+      <label for="id_year_max" class="form-label">
+        Max. Year: <span id="year_max_value">{{ form.year_max.value|default_if_none:'2021' }}</span>
+      </label>
+      <input
+        type="range"
+        name="year_max"
+        id="id_year_max"
+        class="form-range"
+        min="1800"
+        max="2021"
+        step="1"
+        value="{{ form.year_max.value|default_if_none:'2021' }}"
+      />
+      {{ form.year_max.errors }}
+    </div>
+
+    <div class="col-md-6">
+      <label for="id_pages_min" class="form-label">
+        Min. Pages: <span id="pages_min_value">{{ form.pages_min.value|default_if_none:'1' }}</span>
+      </label>
+      <input
+        type="range"
+        name="pages_min"
+        id="id_pages_min"
+        class="form-range"
+        min="1"
+        max="5500"
+        step="1"
+        value="{{ form.pages_min.value|default_if_none:'1' }}"
+      />
+      {{ form.pages_min.errors }}
+    </div>
+    <div class="col-md-6">
+      <label for="id_pages_max" class="form-label">
+        Max. Pages: <span id="pages_max_value">{{ form.pages_max.value|default_if_none:'5500' }}</span>
+      </label>
+      <input
+        type="range"
+        name="pages_max"
+        id="id_pages_max"
+        class="form-range"
+        min="1"
+        max="5500"
+        step="1"
+        value="{{ form.pages_max.value|default_if_none:'5500' }}"
+      />
+      {{ form.pages_max.errors }}
+    </div>
+
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary">Search</button>
+      <a href="{% url 'search_books' %}" class="btn btn-outline-secondary">Clear</a>
+    </div>
+  </form>
+
+  <script>
+    const sliders = [
+      { id: 'id_rating_min', out: 'rating_min_value' },
+      { id: 'id_rating_max', out: 'rating_max_value' },
+      { id: 'id_year_min',   out: 'year_min_value' },
+      { id: 'id_year_max',   out: 'year_max_value' },
+      { id: 'id_pages_min',  out: 'pages_min_value' },
+      { id: 'id_pages_max',  out: 'pages_max_value' },
+    ];
+    sliders.forEach(({id, out}) => {
+      const inp = document.getElementById(id);
+      const lbl = document.getElementById(out);
+      if (inp && lbl) inp.addEventListener('input', () => lbl.textContent = inp.value);
+    });
+  </script>
+
+  <div class="mb-2 d-flex justify-content-between align-items-center">
+    <h4>Results ({{ page_obj.paginator.count }})</h4>
+    <div>Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</div>
+  </div>
+
+  {% if page_obj.object_list %}
+    <div class="list-group mb-3">
+      {% for book in page_obj.object_list %}
+        <a href="{% url 'book_detail' book.pk %}"
+           class="list-group-item list-group-item-action mb-1">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ book.title }}</h5>
+            <small>Rating: {{ book.average_rating }}</small>
+          </div>
+          <p class="mb-1">Author: {{ book.first_author }}</p>
+          <small>Year: {{ book.publication_year }} • Pages: {{ book.num_pages }}</small>
+        </a>
+      {% endfor %}
+    </div>
+
+    <nav aria-label="Page navigation">
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link"
+               href="?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}">
+              « Previous
+            </a>
+          </li>
+        {% endif %}
+        {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link"
+               href="?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}">
+              Next »
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% else %}
+    <p class="text-muted">No books found.</p>
+  {% endif %}
+
+{% endblock content %}

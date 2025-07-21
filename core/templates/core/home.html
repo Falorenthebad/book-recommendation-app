@@ -1,0 +1,58 @@
+<!-- core/templates/core/home.html -->
+
+{% extends 'core/base.html' %}
+
+{% block title %}Home — Book Recommendation{% endblock title %}
+
+{% block nav %}{% endblock nav %}
+
+{% block content %}
+  <div class="text-center mb-5">
+    <h1 class="display-4">Book Recommendation App</h1>
+    <p class="lead">Welcome! Choose one of the features below to get started.</p>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4 mb-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">Book Recommendations</h5>
+          <p class="card-text flex-grow-1">
+            Select your top 3 favorite books and get similar recommendations.
+          </p>
+          <a href="{% url 'recommend_by_favorites' %}" class="btn btn-primary mt-auto">
+            Get Recommendations
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4 mb-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">Book Search</h5>
+          <p class="card-text flex-grow-1">
+            Search and sort books by title, author, rating, year, or pages.
+          </p>
+          <a href="{% url 'search_books' %}" class="btn btn-primary mt-auto">
+            Search
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4 mb-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">Random Recommendation</h5>
+          <p class="card-text flex-grow-1">
+            Get a random book suggestion with rating above 3.7.
+          </p>
+          <a href="{% url 'random_book' %}" class="btn btn-primary mt-auto">
+            Surprise Me
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
