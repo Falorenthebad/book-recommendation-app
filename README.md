@@ -2,6 +2,8 @@
 
 A Django-based web application that allows users to search for books, select their favorite titles, and receive personalized book recommendations based on shared genres and ratings. Additionally, users can get a random high-rated book suggestion or view detailed information about any book in the database.
 
+![Book Recommendation App Preview](assets/index.png)
+
 ---
 
 ## Features
